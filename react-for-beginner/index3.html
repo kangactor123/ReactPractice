@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<body>
+    <div id="root"></div>
+</body>
+<script src="https://unpkg.com/react@17.0.2/umd/react.development.js"></script>
+<script src="https://unpkg.com/react-dom@17.0.2/umd/react-dom.production.min.js"></script>
+<script src="https://unpkg.com/prop-types@15.7.2/prop-types.js"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<script type="text/babel">
+    // props 부모에서부터 데이터를 object 타입으로 받는다
+    // shortcut {property}
+    // 전달받은 props 들을 컴포넌트의 첫 번째 arguments 로 받는다.
+    function Btn({text, changeValue, fontSize=16}) {
+        return (
+            <button 
+                onClick={changeValue}
+                style={{
+                backgroundColor:'tomato',
+                color:'white',
+                padding:'10px 20px',
+                border:0,
+                borderRadius:10,
+                fontSize:fontSize
+            }}>
+                {text}
+            </button>
+        );
+    }
+    
+    //props가 변경되지 않는 한 랜더링하지 않게끔 설정해줄 수 있다. -> memo()
+    const MemorizedBtn = React.memo(Btn);
+
+    //prop 타입을 설정해줌, isRequired -> 반드시 필요한 속성이라는 것
+    Btn.propTypes = {
+        text: PropTypes.string.isRequired,
+        fontSize: PropTypes.number
+    };
+    function App() {
+        const [value, setValue] = React.useState("Save Changes");
+        const changeValue = () => {
+            setValue("Revert changes");
+        }
+        //부모 컴포넌트의 데이터가 바뀌었으니 Btn 컴포넌트들 모두 리랜더링 된다
+        return (
+            //컴포넌트에 작성되는 모든 properties들은 사용되는 컴포넌트의 첫번째 파라미터로 전달된다.
+            <div>  
+                <MemorizedBtn text={value} changeValue={changeValue}/>
+                <MemorizedBtn text={value}/>
+                <Btn text={'react Button'} fontSize={40}/>
+            </div>
+            )
+        }
+        const root = document.getElementById('root');
+        ReactDOM.render(<App/>, root);
+</script>
+</html>

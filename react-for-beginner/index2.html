@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<body>
+    <div id="root"></div>
+</body>
+<script src="https://unpkg.com/react@17.0.2/umd/react.production.min.js"></script>
+<script src="https://unpkg.com/react-dom@17.0.2/umd/react-dom.production.min.js"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<script type="text/babel">
+    function TitleTemp() {
+        return (
+            <h3 id="title" onMouseEnter= {()=>console.log('im clicked')}>
+                Hello Im a span
+            </h3>
+        )
+    }
+    //arrow function
+    const BtnTemp = () => (
+        <button id="button" onClick={() => console.log('im clicked')} style={{backgroundColor:"tomato"}}>
+            click me
+        </button>
+    );
+
+
+    const root = document.getElementById('root');
+    //컴포넌트의 첫 글자는 무조건 대문자여야한다
+    //랜더링
+
+    //state가 바뀌면 React가 Component를 rerendering 해준다.
+    function App() {
+        const [counter, setCounter] = React.useState(0);
+        const onclick = () => {
+            //state를 셋팅하는데 2가지 방식이 있다.
+            //setCounter(counter + 1);
+            //함수를 매개변수로 전달하는 안전성
+            setCounter((counter) => counter+1);
+        }
+        return (
+            <div>   
+                <h3>total clicks : {counter}</h3>
+                <button onClick={onclick}>click me</button>
+            </div>
+        )
+    }
+    ReactDOM.render(<App/>, root);
+    //state -> 데이터가 저장되는 곳
+</script>
+</html>
