@@ -92,11 +92,12 @@ function App() {
     if (destination?.droppableId === source.droppableId) {
       //same board movements
       setToDo((allBoards) => {
-        const boardCopy = [...allBoards[source.droppableId]]
+        const boardCopy = [...allBoards[source.droppableId]];
+        const taskobj = boardCopy[source.index];
         //1. Delete Item on Source.Index
         boardCopy.splice(source.index, 1);
         //2. Put back the item on the destination index
-        boardCopy.splice(destination?.index, 0, draggableId);
+        boardCopy.splice(destination?.index, 0, taskobj);
         return {
           ...allBoards,
           [source.droppableId]: boardCopy
@@ -108,9 +109,10 @@ function App() {
       //cross board movement
       setToDo((allBoards) => {
         const sourceBoard = [...allBoards[source.droppableId]];
+        const taskobj = sourceBoard[source.index];
         const destinationBoard = [...allBoards[destination.droppableId]];
         sourceBoard.splice(source.index, 1);
-        destinationBoard.splice(destination?.index,0,draggableId);
+        destinationBoard.splice(destination?.index,0,taskobj);
         return {
           ...allBoards,
           [source.droppableId]:sourceBoard,
