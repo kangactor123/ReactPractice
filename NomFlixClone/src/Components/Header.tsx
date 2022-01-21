@@ -1,7 +1,8 @@
 import styled from "styled-components";
 import {AnimatePresence, motion, useAnimation, useViewportScroll} from "framer-motion";
-import { Link, useRouteMatch } from "react-router-dom";
+import { Link, useHistory, useRouteMatch } from "react-router-dom";
 import { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
 
 const Nav = styled(motion.nav)`
     display: flex;
@@ -20,7 +21,7 @@ const Col = styled.div`
     align-items: center;
 `;
 
-const Search = styled.span`
+const Search = styled.form`
     color: white;
     margin-right: 100px;
     display:flex;
@@ -84,12 +85,14 @@ const Input = styled(motion.input)`
     //transform-origin : 변화가 시작되는 위치
     transform-origin: right center;
     position: absolute;
-    left:-150px;
-    border:1px solid white;
-    width:250px;
-    height:25px;
+    right:-30px;
+    padding:5px 10px;
     padding-left:30px;
-    background-color: ${(props) => props.theme.black.darker};
+    z-index:-1;
+    color:white;
+    font-size: 16px;;
+    background-color: transparent;
+    border: 1px solid ${(props) => props.theme.white.lighter};
 `;
 
 
@@ -114,13 +117,18 @@ const navVariants = {
     }
 }
 
+interface IForm {
+    keyword : string;
+}
+
 function Header() {
     const [searchOpen, setSearchOpen] = useState(false);
     const homeMatch = useRouteMatch("/");
-    const tvMatch = useRouteMatch("/tv");
+    const tvMatch = useRouteMatch("/tv"); //현재 url 위치가 어디였는지 판단
     const inputAnimation = useAnimation();
     const navAnimation = useAnimation();
-    const {scrollY} = useViewportScroll()
+    const {scrollY} = useViewportScroll();
+    const history = useHistory();
     const toggleSearch = () => {
         if (searchOpen) {
             // trigger close animation
@@ -146,6 +154,11 @@ function Header() {
             }
         });
     }, [scrollY, navAnimation]);
+    const {register, handleSubmit} = useForm<IForm>();
+    const onValid = (data:IForm) => {
+        console.log(data);
+        history.push(`/search?keyword=${data.keyword}`);
+    };
     return (
         <Nav 
         variants={navVariants}
@@ -176,7 +189,7 @@ function Header() {
                 </Items>
             </Col>
             <Col>
-                <Search >
+                <Search onSubmit={handleSubmit(onValid)}>
                 <motion.svg
                     style={{zIndex:1}}
                     onClick={toggleSearch}
@@ -193,6 +206,7 @@ function Header() {
                     ></path>
                 </motion.svg>
                 <Input 
+                       {...register("keyword", {required:true, minLength:2})}
                        animate={inputAnimation}
                        initial={{scaleX:0}} 
                        transition={{type:"linear"}}  
