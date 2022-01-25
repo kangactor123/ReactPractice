@@ -24,8 +24,9 @@ const Coin = styled.li`
   margin-bottom: 10px;
   a {
     transition: 0.2s color ease-in; //ease in 전환 속도가 천천히 시작.
-    display:block;
     padding:20px;
+    display:flex;
+    align-items: center;
   }
   &:hover {
     a {
@@ -43,6 +44,12 @@ const Loader = styled.div`
   font-size: 48px;
   text-align: center;
   color:${(props) => props.theme.textColor};
+`;
+
+const Img = styled.img`
+  width:35px;
+  height:35px;
+  margin-right:10px;
 `;
 
 interface ICoins {
@@ -67,6 +74,7 @@ function Coins() {
         setLoading(false);
       })();
     },[]);
+    //Link를 통해서 query string 말고 object 타입의 객체를 보내줄 수 있다.
     return (
         <Container>
             <Header>
@@ -77,7 +85,15 @@ function Coins() {
             :<CoinList>
                 {coins.map((coin) => 
                 <Coin key={coin.id}>
-                    <Link to={`/${coin.id}`}>{coin.name} &rarr;</Link>
+                    <Link to={{
+                      pathname:`/${coin.id}`,
+                      state: {
+                        name:coin.name,
+                      }
+                    }}>
+                      <Img src={`https://cryptoicon-api.vercel.app/api/icon/${coin.symbol.toLowerCase()}`}/>
+                      {coin.name} &rarr;
+                    </Link>
                 </Coin>)}
             </CoinList>}
         </Container>
