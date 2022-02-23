@@ -1,3 +1,0 @@
-# ReactPractice
-
-###Framer-motion
